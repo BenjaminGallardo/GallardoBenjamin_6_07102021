@@ -1,6 +1,6 @@
-const mongoose = require('mongoose'); // On importe le module mongoose
+const mongoose = require('mongoose'); // Importation de mongoose pour utiliser une méthode spécifique
 
-const sauceSchema = mongoose.Schema({ // La fonction schema nous est mis à disposition par mongoose
+const sauceSchema = mongoose.Schema({ // La fonction schema créé la structure d'un élément dans la base de données et donc dans les requêtes
     userId: {type: String, required: true},
     name: {type: String, required: true},
     manufacturer: {type: String, required: true},
@@ -10,8 +10,8 @@ const sauceSchema = mongoose.Schema({ // La fonction schema nous est mis à disp
     heat: {type: Number, required: true},
     likes: {type: Number},
     dislikes: {types: Number},
-    userLikes: {type: Array},
-    userDislikes: {type: Array}
+    userLikes: [{type: String}],
+    userDislikes: [{type: Array}]
 });
 
-module.exports = mongoose.model('Sauce', sauceSchema); // Ici on exporte notre schéma
+module.exports = mongoose.model('Sauce', sauceSchema); // Exportation du schéma pour une utilisation dans les controllers

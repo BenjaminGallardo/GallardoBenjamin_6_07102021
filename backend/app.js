@@ -1,27 +1,33 @@
-// Il faut que notre server node serve cette application
+// Il faut que notre serveur 'node' serve cette application
 
-const express = require('express'); // On récupère notre module express
-const bodyParser = require('body-parser'); // Il transformera les données JSON en données Javascript utilisable
-const mongoose = require('mongoose');
-const sauceRoutes = require('./routes/sauce')
+const express = require('express'); // Récupération du module express
+const bodyParser = require('body-parser'); // Transformera les données JSON des body en données Javascript utilisables
+const mongoose = require('mongoose'); // Mongoose créé un schéma pour modéliser vos données d’application
 
-mongoose.connect('mongodb+srv://Josh:Azerty3@piiquante.nbcgx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+const sauceRoutes = require('./routes/sauce'); // Récupération des routes 'sauces' pour appliquer le chemin universel à toutes les routes une seule fois
+const userRoutes = require('./routes/user'); // Récupération des routes 'user' pour appliquer le chemin universel à toutes les routes une seule fois
+
+// Connexion à mongoDB
+mongoose.connect('mongodb+srv://Josh:Azerty3@piiquante.nbcgx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', 
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-const app = express(); // On créé notre application express en appelant la méthode express
+const app = express(); // Création de l'application express en appelant la méthode express ( Prend en charge les sessions, le traitement des erreurs et le routage)
 
-app.use((req, res, next) => { // le chemin s'appliquant pour toutes les routes s'appliquera à chaque requête
-    res.setHeader('Access-Control-Allow-Origin', '*'); // On ajoute des header à notre réponse, origin qui peut accéder à notre API c'est tout le monde (*) 
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); // On autorise l'utilisation de certaines en-tête
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS'); // On autorise certaines méthodes
-    next(); // On dit qu'il peut passer au middleware suivant
+// 'app.use' est une fonction qui appelée à chaque requête
+
+app.use((req, res, next) => { 
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Ajout de headers à notre réponse | Précision de l'origin des utilisateurs pouvant accéder à l'API = Tout le monde 
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); // Autorisation à l'utilisation de certaines en-tête
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS'); // Autorisation des méthodes listées
+    next(); // Next précise que l'on passe au middleware suivant
   });
 
-app.use(bodyParser.json()); // On aura accès à cette modification du body sur toutes les routes au format js
+app.use(bodyParser.json()); // Conversion du body en JS sur toutes les routes
 
-app.use('/api/sauces', sauceRoutes); // Ici on dit que toutes les routes comprenne ce chemin de base et on applique les routes en fonction de la requête
+app.use('/api/sauces', sauceRoutes); // Chaque routes 'sauces' commencera obligatoirement par ce chemin
+app.use('/api/auth', userRoutes); // Chaque routes 'auth' commencera obligatoirement par ce chemin
 
-module.exports = app; // On exporte notre application pour la réutiliser dans un autre fichier
+module.exports = app; // On exporte notre application pour la réutiliser dans le fichier 'server'
