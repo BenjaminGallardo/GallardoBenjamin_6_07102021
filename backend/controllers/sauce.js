@@ -1,11 +1,11 @@
 // Les controllers prennent la logique métier de chaque route pour les importer de manière plus intuitives après dans les middleware
 
 const Sauce = require('../models/Sauce'); // Importation des models 'Sauce' puisque les controllers gérent les requêtes et les réponse
+const fs = require('fs'); // Package Node, 'file system' qui donne accès aux opérations du système fichier
 
 exports.getAllSauces = (req, res, next) => {
     Sauce.find() // Récupération de toutes les sauces
-        .then(sauces => res.status(200).json(sauces))
-        next();
+        .then(sauces => res.status(200).json(sauces)) // Si résolue, renvoie les sauces en JSON
 };
 
 exports.getOneSauce = (req, res, next) => { 
@@ -15,22 +15,38 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 exports.createSauce = (req, res, next) => {
+    const sauceObject = JSON.parse(req.body.sauce); // Exctraction de l'objet JSON du corps de la requête
     const sauce = new Sauce({
-        ...req.body // L'opérateur spread '...' permet de copier les champs du body de la request et détaillera les informations
+        ...sauceObject, // L'opérateur spread '...' permet de copier les champs du body de la request (qui est l'objet sauce) et détaillera les informations
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` // 1: HTTP(S) 2: Racine du server 3:Le dossier 4:Le nom du fichier à intégrer 
     });
     sauce.save()
         .then(() => res.status(201).json({message : 'Objet enregistré'}))
         .catch(() => res.status(400).json(error));
-        next();
 };
 
 exports.modifySauces = (req, res, next) => {
+    const sauceObject = req.file ? // Opérateur ternaire pour vérifier si l'image existe ou non
+    { 
+        ...JSON.parse(req.body.sauce),
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    } : { ...req.body }; // Si il existe , si il n'existe pas copie le req.body
+    Sauce.updateOne({_id: req.params.id}, {...sauceObject, _id: req.params.id}) // On récupère l'identifiant pour correspondre à celui de la requête
+    .then(() => res.status(200).json({message : "Sauce Modifiée"}))
+    .catch(() => res.status(400).json(error));
 };
 
 exports.deleteSauces = (req, res, next) => {
-    Sauce.delete({_id: req.params.id})
+    Sauce.findOne({_id: req.params.id}) // Recherche de l'id se trouvant dans les paramètres de la requête
+        .then(sauce => { // L'objectif est de récupérer le nom précis du fichier
+            const filename = sauce.imageUrl.split('/images/')[1] // Le tableau récupérera tout ce qui vient avant images et après images
+            fs.unlink(`images/${filename}`, () => { // Appel de la fonction de supression d'un fichier grâce au package fs
+                    Sauce.deleteOne({_id: req.params.id})
         .then(sauce => res.status(200).json({message: "Sauce Supprimée"}))
-        .catch(() => res.status(400).json(error));
+        .catch(error => res.status(400).json(error));
+            }) 
+        })
+        .catch((error => res.status(500).json(error)));
 };
 
 exports.likeOrDislikesSauce = (req, res, next) => {
