@@ -1,4 +1,4 @@
-const http = require('http'); // On importe le package HTTP et qui nous permet de créer un serveur
+const http = require('http'); // On importe le module HTTP et qui nous permet de créer un serveur
 const app = require('./app') // On récupère notre application express
 
 const normalizePort = val => {

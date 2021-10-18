@@ -10,8 +10,8 @@ const sauceSchema = mongoose.Schema({ // La fonction schema créé la structure 
     heat: {type: Number, required: true},
     likes: {type: Number, default: 0},
     dislikes: {type: Number, default: 0},
-    userLikes: {type: [String]},
-    userDislikes: {type: [String]}
+    usersLiked: {type: [String]},
+    usersDisliked: {type: [String]}
 });
 
 module.exports = mongoose.model('Sauce', sauceSchema); // Exportation du schéma pour une utilisation dans les controllers
