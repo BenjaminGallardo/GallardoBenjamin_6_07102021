@@ -19,7 +19,6 @@ mongoose.connect('mongodb+srv://Josh:Azerty3@piiquante.nbcgx.mongodb.net/myFirst
 const app = express(); // Création de l'application express en appelant la méthode express ( Prend en charge les sessions, le traitement des erreurs et le routage)
 
 // 'app.use' est une fonction qui appelée à chaque requête
-
 app.use(helmet());
 
 app.use((req, res, next) => { 
