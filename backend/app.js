@@ -1,6 +1,7 @@
 // Il faut que notre serveur 'node' serve cette application
 
 const express = require('express'); // Récupération du module express
+const helmet = require("helmet"); // Module permettant de retirer certaines informations visuelles des headers
 const bodyParser = require('body-parser'); // Transformera les données JSON des body en données Javascript utilisables
 const mongoose = require('mongoose'); // Mongoose créé un schéma pour modéliser vos données d’application
 const path = require('path'); // Donne accès au chemin du système de fichier
@@ -18,6 +19,8 @@ mongoose.connect('mongodb+srv://Josh:Azerty3@piiquante.nbcgx.mongodb.net/myFirst
 const app = express(); // Création de l'application express en appelant la méthode express ( Prend en charge les sessions, le traitement des erreurs et le routage)
 
 // 'app.use' est une fonction qui appelée à chaque requête
+
+app.use(helmet());
 
 app.use((req, res, next) => { 
     res.setHeader('Access-Control-Allow-Origin', '*'); // Ajout de headers à notre réponse | Précision de l'origin des utilisateurs pouvant accéder à l'API = Tout le monde 
