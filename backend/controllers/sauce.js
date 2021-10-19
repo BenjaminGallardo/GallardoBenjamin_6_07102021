@@ -2,7 +2,6 @@
 
 const Sauce = require('../models/Sauce'); // Importation des models 'Sauce' puisque les controllers gérent les requêtes et les réponse
 const fs = require('fs'); // Package Node, 'file system' qui donne accès aux opérations du système fichier
-const { findOne } = require('../models/Sauce');
 
 exports.getAllSauces = (req, res, next) => {
     Sauce.find() // Récupération de toutes les sauces
@@ -24,7 +23,7 @@ exports.createSauce = (req, res, next) => {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` // 1: HTTP(S) 2: Racine du server 3:Le dossier 4:Le nom du fichier à intégrer 
     });
     sauce.save()
-        .then(() => res.status(201).json({message : 'Objet enregistré'}))
+        .then(() => res.status(201).json({message : 'Sauce créée'}))
         .catch(error => res.status(400).json(error));
 };
 
