@@ -11,7 +11,7 @@ const sauceRoutes = require('./routes/sauce'); // Récupération des routes 'sau
 const userRoutes = require('./routes/user'); // Récupération des routes 'user' pour appliquer le chemin universel à toutes les routes une seule fois
 
 // Connexion à mongoDB
-mongoose.connect(process.env.MDPBDD, 
+mongoose.connect('mongodb+srv://Josh:Azerty3@piiquante.nbcgx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', 
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
