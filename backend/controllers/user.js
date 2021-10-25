@@ -1,7 +1,6 @@
 const User = require('../models/User'); // Importation des models 'User' puisque les controllers gérent les requêtes et les réponse
 const bcrypt = require('bcrypt'); // Permet de créer des hash des mots de passe
 const jwt = require('jsonwebtoken'); // Permet d'encoder un 'token' pour vérifier que l'utilisteur peut manipuler ces informations
-
 // MiddleWare d'enregistrement d'un utilisateur 
 
 exports.signup = (req, res, next) => {
@@ -37,7 +36,7 @@ exports.login = (req, res, next) => {
                         userId : user.id,
                         token:jwt.sign(
                             { userId: user._id }, // Vérification que les requêtes correspondent bien au user.id
-                            'RANDOM_TOKEN_SECRET', // Clé secrète de l'encodage
+                            process.env.TOKEN, // Clé secrète de l'encodage
                             { expiresIn: '24h' } // Le token expire au bout de 24h
                         )
                     });

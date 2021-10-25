@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
         // 1 : Récupérer le token dans le header
         const token = req.headers.authorization.split(' ')[1] //Récupération d'un tableau avec le bearer en premier élément et le token en second élément, seul le second nous intéresse
         // 2 : Décodage du token
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+        const decodedToken = jwt.verify(token, process.env.TOKEN);
         // 3 : Une fois décoder récupération de l'user en objet js
         const userId = decodedToken.userId;
         // 4 : Une fois récupérer on va voir si la requête effectuée correspond au token enregitré
